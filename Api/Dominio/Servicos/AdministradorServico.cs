@@ -1,3 +1,4 @@
+using minimal_api.Dominio.DTOs;
 using minimal_api.Dominio.Entidades;
 using minimal_api.Dominio.Interfaces;
 using minimal_api.Infraestrutura.Db;

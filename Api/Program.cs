@@ -1,10 +1,23 @@
 using minimal_api;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 
-IHostBuilder CreaterHostBuiler(string[] args)
+namespace minimal_api
 {
-  return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder => {
-    webBuilder.UseStartup<Startup>();
-  });
-}
+  public class Program
+  {
+    public static void Main(string[] args)
+    {
+      CreateHostBuilder(args).Build().Run();
+    }
 
-CreaterHostBuiler(args).Build().Run();
+    private static IHostBuilder CreateHostBuilder(string[] args)
+    {
+      return Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+          webBuilder.UseStartup<Startup>();
+        });
+    }
+  }
+}

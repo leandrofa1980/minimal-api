@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using minimal_api;
 using minimal_api.Dominio.Entidades;
 using minimal_api.Dominio.Enuns;
 using minimal_api.Dominio.Interfaces;
@@ -15,16 +14,17 @@ using minimal_api.Dominio.ModelViews;
 using minimal_api.Dominio.Servicos.AdministradorServico;
 using minimal_api.DTOs;
 using minimal_api.Infraestrutura.Db;
+using minimal_api.Dominio.DTOs;
 
 public class Startup
 {
   public Startup(IConfiguration configuration)
   {
-        Configuration = configuration;
+    Configuration = configuration;
     key = Configuration?.GetSection("Jwt")?.ToString() ?? "";
   }
 
-  private string key;
+  private string key = "";
 
   public IConfiguration Configuration { get; set; } = default!;
 
@@ -179,7 +179,8 @@ public class Startup
       .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
       .WithTags("Administradores");
 
-      endpoints.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, IAdministradorServico administradorServico) =>
+      endpoints.MapPost("/administradores", (
+        [FromBody] minimal_api.DTOs.AdministradorDTO administradorDTO, IAdministradorServico administradorServico) =>
       {
         var validacao = new ErrosDeValidacao
         {
@@ -234,7 +235,7 @@ public class Startup
 
         return validacao;
       }
-      endpoints.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+      endpoints.MapPost("/veiculos", ([FromBody] minimal_api.DTOs.VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
       {
         var validacao = validaDTO(veiculoDTO);
         if (validacao.Mensagens.Count > 0)
@@ -270,7 +271,7 @@ public class Startup
       .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm, Editor" })
       .WithTags("Veiculos");
 
-      endpoints.MapPut("/veiculos/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
+      endpoints.MapPut("/veiculos/{id}", ([FromRoute] int id, minimal_api.DTOs.VeiculoDTO veiculoDTO, IVeiculoServico veiculoServico) =>
       {
         var veiculo = veiculoServico.BuscaPorId(id);
         if (veiculo == null) return Results.NotFound();
